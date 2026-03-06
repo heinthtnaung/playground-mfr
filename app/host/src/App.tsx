@@ -4,20 +4,26 @@ import { SharedButton, SharedCard } from '@repo/ui';
 // Lazy load federated modules
 const RemoteFeatureA = React.lazy(() => import('featureA/TestComponentA'));
 const RemoteFeatureB = React.lazy(() => import('featureB/TestComponentB'));
+const RemoteCatalogView = React.lazy(() => import('featureA/CatalogView'));
 
 export const App: React.FC = () => {
   const [enableFeatureA, setEnableFeatureA] = useState(() => localStorage.getItem('ff_enableFeatureA') === 'true');
   const [enableFeatureB, setEnableFeatureB] = useState(() => localStorage.getItem('ff_enableFeatureB') === 'true');
+  const [enableCatalog, setEnableCatalog] = useState(() => localStorage.getItem('ff_enableCatalog') === 'true');
 
-  const toggleFeature = (feature: 'A' | 'B') => {
+  const toggleFeature = (feature: 'A' | 'B' | 'Catalog') => {
     if (feature === 'A') {
       const newVal = !enableFeatureA;
       setEnableFeatureA(newVal);
       localStorage.setItem('ff_enableFeatureA', String(newVal));
-    } else {
+    } else if (feature === 'B') {
       const newVal = !enableFeatureB;
       setEnableFeatureB(newVal);
       localStorage.setItem('ff_enableFeatureB', String(newVal));
+    } else {
+      const newVal = !enableCatalog;
+      setEnableCatalog(newVal);
+      localStorage.setItem('ff_enableCatalog', String(newVal));
     }
   };
 
@@ -40,6 +46,12 @@ export const App: React.FC = () => {
           onClick={() => toggleFeature('B')}
         >
           Toggle Feature B ({enableFeatureB ? 'ON' : 'OFF'})
+        </SharedButton>
+        <SharedButton
+          className={!enableCatalog ? 'bg-gray-400 hover:bg-gray-500' : ''}
+          onClick={() => toggleFeature('Catalog')}
+        >
+          Toggle Catalog ({enableCatalog ? 'ON' : 'OFF'})
         </SharedButton>
       </div>
 
@@ -64,6 +76,19 @@ export const App: React.FC = () => {
           ) : (
             <div className="p-8 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-500 bg-gray-50 h-[200px]">
               Feature B is disabled via toggle.
+            </div>
+          )}
+        </section>
+
+        {/* Catalog View Section */}
+        <section className="md:col-span-2">
+          {enableCatalog ? (
+            <Suspense fallback={<div className="p-8 text-center text-gray-500">Loading Catalog...</div>}>
+              <RemoteCatalogView />
+            </Suspense>
+          ) : (
+            <div className="p-8 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-500 bg-gray-50 h-[200px]">
+              Catalog View is disabled via toggle.
             </div>
           )}
         </section>
