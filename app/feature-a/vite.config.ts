@@ -1,15 +1,17 @@
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 import federation from '@originjs/vite-plugin-federation';
 
 export default defineConfig({
   plugins: [
+    react(),
     federation({
       name: 'featureA',
       filename: 'remoteEntry.js',
       exposes: {
-        './TestComponentA': './src/TestComponentA.js',
+        './TestComponentA': './src/App.tsx',
       },
-      shared: []
+      shared: ['react', 'react-dom']
     })
   ],
   build: {

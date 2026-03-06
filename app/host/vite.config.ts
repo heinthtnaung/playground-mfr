@@ -1,15 +1,17 @@
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 import federation from '@originjs/vite-plugin-federation';
 
 export default defineConfig({
   plugins: [
+    react(),
     federation({
-      name: 'featureB',
-      filename: 'remoteEntry.js',
-      exposes: {
-        './TestComponentB': './src/TestComponentB.js',
+      name: 'host',
+      remotes: {
+        featureA: 'http://localhost:5001/assets/remoteEntry.js',
+        featureB: 'http://localhost:5002/assets/remoteEntry.js',
       },
-      shared: []
+      shared: ['react', 'react-dom']
     })
   ],
   build: {
@@ -18,10 +20,10 @@ export default defineConfig({
     cssCodeSplit: false,
   },
   server: {
-    port: 5002,
+    port: 5000,
     cors: true
   },
   preview: {
-    port: 5002,
+    port: 5000,
   }
 });
