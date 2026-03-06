@@ -14,6 +14,7 @@ export default defineConfig(({ mode }) => {
         filename: 'remoteEntry.js',
         exposes: {
           './TestComponentA': './src/App.tsx',
+          './CatalogView': './src/CatalogView.tsx',
         },
         shared: ['react', 'react-dom']
       })
